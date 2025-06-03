@@ -1,0 +1,58 @@
+-- Analysis 1: Identifying the most dominant electric vehicle manufacturers.
+-- Goal: Find out which car brands have the highest number of registered electric vehicles.
+-- Insight: This can help understand market leaders and potential trends in user preference by brand.
+SELECT `Make`, COUNT(*) as count
+FROM n.electric_vehicle_population_data
+GROUP BY `Make`
+ORDER BY count DESC
+LIMIT 10;
+
+-- Analysis 2: Distribution of electric vehicles by their type.
+-- Goal: Understand how different types of EVs (e.g., Battery Electric, Plug-in Hybrid) are represented in the dataset.
+-- Insight: Useful to identify which EV technologies are more commonly adopted.
+SELECT `Electric Vehicle Type`, count(*) as count
+FROM n.electric_vehicle_population_data
+GROUP BY `Electric Vehicle Type`;
+
+-- Analysis 3: Number of electric vehicle registrations per year.
+-- Goal: Track the adoption of EVs over time.
+-- Insight: This helps analyze whether EV adoption is growing year by year.
+SELECT `model year`, count(*) as cars_count
+FROM n.electric_vehicle_population_data
+GROUP BY `model year`
+ORDER BY `model year` ASC;
+
+-- Analysis 4: How many Tesla vehicles were registered after 2020.
+-- Goal: Measure Tesla's growth in the most recent years.
+-- Insight: Evaluating Tesla's market dynamics post-2020, which could reflect changing trends or incentives.
+SELECT make, count(*) as cars_count
+FROM n.electric_vehicle_population_data
+WHERE `Model Year` > '2020' AND `Make` = 'TESLA'
+GROUP BY make;
+
+-- Analysis 5: Top 3 most frequently registered models for each manufacturer.
+-- Goal: For each car brand, identify their most popular EV models.
+-- Insight: Helps in understanding product-level success within each brand.
+WITH ranked_models AS (
+  SELECT
+    `Make`,
+    `Model`,
+    COUNT(*) AS model_count,
+    RANK() OVER (PARTITION BY `Make` ORDER BY COUNT(*) DESC) AS rank_in_make
+  FROM n.electric_vehicle_population_data
+  GROUP BY `Make`, `Model`
+)
+SELECT * 
+FROM ranked_models
+WHERE rank_in_make <= 3;
+
+-- Analysis 6: Cumulative count of EV registrations over the years (Running total).
+-- Goal: Visualize the growth of EV registrations as an accumulating trend.
+-- Insight: This helps to identify key inflection points or growth acceleration periods in EV adoption.
+SELECT
+  `Model Year`,
+  COUNT(*) AS yearly_count,
+  SUM(COUNT(*)) OVER (ORDER BY `Model Year`) AS cumulative_count
+FROM n.electric_vehicle_population_data
+GROUP BY `Model Year`
+ORDER BY `Model Year`;
