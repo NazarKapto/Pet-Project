@@ -1,0 +1,10 @@
+The first stage after receiving data I started cleaning process
+The dataset includes ~246,000 rows and 17 columns with categorical, numerical, and geolocation data.
+Checked for duplicates using VIN — none found.
+- `Vehicle Location` was cleaned and split into `Latitude` and `Longitude` for mapping.
+- Missing values were handled:
+- Columns with 4–17 blanks (`County`, `City`, `Base MSRP`, etc.) — rows removed.
+- `Legislative District` (540 blanks) — filled with `"Unknown"`.
+- `Base MSRP` was removed due to 98% of values being 0 — too incomplete for analysis.
+
+This cleaning ensured data consistency and quality for further analysis in SQL and Tableau.
