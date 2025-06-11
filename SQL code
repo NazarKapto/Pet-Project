@@ -56,3 +56,13 @@ SELECT
 FROM n.electric_vehicle_population_data
 GROUP BY `Model Year`
 ORDER BY `Model Year`;
+
+-- Analysis 7: Annual market share of Tesla among all electric vehicle registrations.
+-- Goal: Calculate the proportion of Tesla vehicles registered each year relative to the total number of EVs.
+-- Insight: This helps evaluate Tesla’s popularity and market dominance over time compared to other EV manufacturers.
+SELECT 
+  `Model Year`,
+  ROUND(SUM(CASE WHEN Make = 'TESLA' THEN 1 ELSE 0 END) * 1.0 / COUNT(*), 3) AS tesla_share
+FROM n.electric_vehicle_population_data
+GROUP BY `Model Year`
+ORDER BY `Model Year`;
